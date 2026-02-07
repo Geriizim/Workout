@@ -6,13 +6,7 @@ let package = Package(
     platforms: [.macOS(.v14)],
     products: [.library(name: "MicroStreaksLogic", targets: ["MicroStreaksLogic"])],
     targets: [
-        .target(name: "MicroStreaksLogic", path: "Services", sources: [
-            "StreakService.swift",
-            "SessionScalingService.swift",
-            "PaywallRouter.swift",
-            "ContentVersioningService.swift",
-            "SeedMergeService.swift"
-        ]),
+        .target(name: "MicroStreaksLogic", path: "Services", sources: ["StreakService.swift", "SessionScalingService.swift"]),
         .testTarget(name: "MicroStreaksLogicTests", dependencies: ["MicroStreaksLogic"], path: "Tests")
     ]
 )

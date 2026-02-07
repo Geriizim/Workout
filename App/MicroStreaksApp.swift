@@ -23,24 +23,10 @@ struct MicroStreaksApp: App {
             RootView(hasCompletedOnboarding: $hasCompletedOnboarding)
                 .preferredColorScheme(nil)
                 .onAppear {
-                    initializeSeededDataIfNeeded()
+                    ContentVersioningService().applyIfNeeded(currentVersion: 1, seededVersion: seededContentVersion)
                 }
         }
         .modelContainer(sharedModelContainer)
-    }
-
-    private func initializeSeededDataIfNeeded() {
-        let currentVersion = ContentSeedService.contentVersion
-        let versioningService = ContentVersioningService()
-        guard versioningService.shouldApply(currentVersion: currentVersion, seededVersion: seededContentVersion) else { return }
-
-        let context = ModelContext(sharedModelContainer)
-        do {
-            try ContentSeedService().seedIfNeeded(context: context)
-            versioningService.applyIfNeeded(currentVersion: currentVersion, seededVersion: seededContentVersion)
-        } catch {
-            EventLogger.log("content_seed_failed", meta: ["reason": error.localizedDescription])
-        }
     }
 }
 
