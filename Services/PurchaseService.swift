@@ -19,9 +19,27 @@ final class PurchaseService: ObservableObject {
     func buy(_ product: Product) async -> Bool {
         do {
             let result = try await product.purchase()
-            if case .success = result { EventLogger.log("subscribe_success"); return true }
+            switch result {
+            case .success(let verification):
+                switch verification {
+                case .verified(let transaction):
+                    await transaction.finish()
+                    EventLogger.log("subscribe_success")
+                    return true
+                case .unverified:
+                    errorKey = "paywall.error.purchase"
+                    return false
+                }
+            case .userCancelled, .pending:
+                return false
+            @unknown default:
+                errorKey = "paywall.error.purchase"
+                return false
+            }
+        } catch {
+            errorKey = "paywall.error.purchase"
             return false
-        } catch { errorKey = "paywall.error.purchase"; return false }
+        }
     }
 
     func restore() async -> Bool {
