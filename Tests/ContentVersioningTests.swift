@@ -10,6 +10,13 @@ final class ContentVersioningTests: XCTestCase {
         XCTAssertFalse(service.shouldApply(currentVersion: 1, seededVersion: 2))
     }
 
+    func testResetSeededVersionToZero() {
+        let key = ContentVersioningService.seededVersionKey
+        UserDefaults.standard.set(9, forKey: key)
+        service.resetSeededVersion()
+        XCTAssertEqual(UserDefaults.standard.integer(forKey: key), 0)
+    }
+
     func testMergedStableKeysAvoidsDuplicationOnReseed() {
         let existing: Set<String> = ["office_chin_tuck", "office_neck_rotation"]
         let incoming = ["office_chin_tuck", "office_neck_rotation", "office_wrist_extensor"]

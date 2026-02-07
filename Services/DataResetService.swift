@@ -11,7 +11,7 @@ final class DataResetService {
         try context.delete(model: UserProfile.self)
         try context.delete(model: StreakState.self)
         try context.delete(model: CompletedSession.self)
-        UserDefaults.standard.set(0, forKey: "seededContentVersion")
+        ContentVersioningService().resetSeededVersion()
         try context.save()
     }
 }
